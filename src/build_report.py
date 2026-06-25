@@ -20,19 +20,20 @@ OUT = os.path.join(REPORT, "DAH2026_예선보고서_Creative-Tactics.pdf")
 ORDER = ["01_cover", "02_toc", "03_team", "04_attack_scenario",
          "05_defense", "06_agent", "07_conclusion", "08_references"]
 
+# 무채색(검정) 테마
 CSS = """
 @page { size: A4; margin: 1.8cm; }
-body { font-family: korean; font-size: 10.5pt; line-height: 1.5; color:#111; }
-h1 { font-size: 17pt; color:#16335c; border-bottom:2px solid #16335c; padding-bottom:3px; }
-h2 { font-size: 13.5pt; color:#1c4a8a; margin-top:12px; }
-h3 { font-size: 11.5pt; color:#27496b; }
+body { font-family: korean; font-size: 10.5pt; line-height: 1.55; color:#111; }
+h1 { font-size: 17pt; color:#000; border-bottom:2px solid #000; padding-bottom:3px; }
+h2 { font-size: 13.5pt; color:#000; margin-top:13px; }
+h3 { font-size: 11.5pt; color:#222; }
 table { border-collapse: collapse; width:100%; font-size:8.8pt; margin:6px 0; }
-th, td { border:1px solid #888; padding:3px 5px; }
-th { background:#1c4a8a; color:#fff; }
-code, pre { font-family: korean; background:#f4f4f4; font-size:8.4pt; }
-pre { padding:6px; border:1px solid #ddd; }
+th, td { border:1px solid #777; padding:3px 5px; }
+th { background:#333; color:#fff; }
+code, pre { font-family: korean; background:#f3f3f3; font-size:8.4pt; }
+pre { padding:6px; border:1px solid #ccc; }
 img { max-width:88%; }
-blockquote { border-left:3px solid #1c4a8a; padding-left:8px; color:#333; background:#f7f9fc; }
+blockquote { border-left:3px solid #555; padding-left:9px; color:#222; background:#f5f5f5; }
 """
 FONT_DECL = f'@font-face {{ font-family: korean; src: url("{FONT}"); }}'
 
