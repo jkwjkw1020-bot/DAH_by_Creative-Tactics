@@ -1,0 +1,4 @@
+numpy>=1.26
+matplotlib>=3.9
+scikit-learn>=1.6
+# 선택(실기체/ArduPilot SITL 연동 시): pymavlink>=2.4

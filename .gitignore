@@ -1,0 +1,16 @@
+# Python
+__pycache__/
+*.pyc
+*.egg-info/
+.venv/
+venv/
+
+# macOS
+.DS_Store
+
+# Claude / 작업 메타
+.claude/
+
+# 대회 원본 자료(저작권) 및 개인정보 포함 보고서 — 레포 비공개
+DAH 예선_안내서.pdf
+report/

@@ -1,0 +1,632 @@
+{
+  "summary": [
+    {
+      "mode": "ATTACK (defense OFF)",
+      "defense": false,
+      "final_uav_pos_err": 49.21,
+      "max_uav_innov": 29.18,
+      "final_ugv_target_err": 67.528,
+      "detections": 0,
+      "blocks": 0,
+      "recoveries": 0,
+      "attacker_events": 29,
+      "defender_alarms": 0
+    },
+    {
+      "mode": "DEFENSE (defense ON)",
+      "defense": true,
+      "final_uav_pos_err": 0.605,
+      "max_uav_innov": 3.57,
+      "final_ugv_target_err": 0.0,
+      "detections": 2,
+      "blocks": 1,
+      "recoveries": 2,
+      "attacker_events": 29,
+      "defender_alarms": 5
+    }
+  ],
+  "off_metrics": [
+    {
+      "t": 0.0,
+      "uav_innov": 0.293,
+      "uav_pos_err": 54.0,
+      "ugv_target_err": 0.0
+    },
+    {
+      "t": 1.0,
+      "uav_innov": 0.214,
+      "uav_pos_err": 48.0,
+      "ugv_target_err": 0.0
+    },
+    {
+      "t": 2.0,
+      "uav_innov": 0.087,
+      "uav_pos_err": 42.0,
+      "ugv_target_err": 0.0
+    },
+    {
+      "t": 3.0,
+      "uav_innov": 0.403,
+      "uav_pos_err": 36.0,
+      "ugv_target_err": 0.0
+    },
+    {
+      "t": 4.0,
+      "uav_innov": 0.34,
+      "uav_pos_err": 30.0,
+      "ugv_target_err": 0.0
+    },
+    {
+      "t": 5.0,
+      "uav_innov": 0.714,
+      "uav_pos_err": 24.0,
+      "ugv_target_err": 0.0
+    },
+    {
+      "t": 6.0,
+      "uav_innov": 1.402,
+      "uav_pos_err": 19.004,
+      "ugv_target_err": 0.0
+    },
+    {
+      "t": 7.0,
+      "uav_innov": 2.531,
+      "uav_pos_err": 17.034,
+      "ugv_target_err": 0.0
+    },
+    {
+      "t": 8.0,
+      "uav_innov": 3.574,
+      "uav_pos_err": 19.059,
+      "ugv_target_err": 0.0
+    },
+    {
+      "t": 9.0,
+      "uav_innov": 4.884,
+      "uav_pos_err": 24.427,
+      "ugv_target_err": 0.0
+    },
+    {
+      "t": 10.0,
+      "uav_innov": 5.746,
+      "uav_pos_err": 30.449,
+      "ugv_target_err": 0.0
+    },
+    {
+      "t": 11.0,
+      "uav_innov": 7.532,
+      "uav_pos_err": 36.51,
+      "ugv_target_err": 0.0
+    },
+    {
+      "t": 12.0,
+      "uav_innov": 8.159,
+      "uav_pos_err": 39.98,
+      "ugv_target_err": 89.968
+    },
+    {
+      "t": 13.0,
+      "uav_innov": 9.662,
+      "uav_pos_err": 40.568,
+      "ugv_target_err": 87.728
+    },
+    {
+      "t": 14.0,
+      "uav_innov": 10.577,
+      "uav_pos_err": 41.193,
+      "ugv_target_err": 86.844
+    },
+    {
+      "t": 15.0,
+      "uav_innov": 12.011,
+      "uav_pos_err": 41.36,
+      "ugv_target_err": 85.388
+    },
+    {
+      "t": 16.0,
+      "uav_innov": 13.171,
+      "uav_pos_err": 41.732,
+      "ugv_target_err": 84.464
+    },
+    {
+      "t": 17.0,
+      "uav_innov": 14.519,
+      "uav_pos_err": 42.194,
+      "ugv_target_err": 83.16
+    },
+    {
+      "t": 18.0,
+      "uav_innov": 15.627,
+      "uav_pos_err": 42.4,
+      "ugv_target_err": 82.008
+    },
+    {
+      "t": 19.0,
+      "uav_innov": 16.876,
+      "uav_pos_err": 42.483,
+      "ugv_target_err": 80.769
+    },
+    {
+      "t": 20.0,
+      "uav_innov": 18.243,
+      "uav_pos_err": 43.208,
+      "ugv_target_err": 79.985
+    },
+    {
+      "t": 21.0,
+      "uav_innov": 19.074,
+      "uav_pos_err": 43.961,
+      "ugv_target_err": 78.773
+    },
+    {
+      "t": 22.0,
+      "uav_innov": 20.094,
+      "uav_pos_err": 44.068,
+      "ugv_target_err": 77.475
+    },
+    {
+      "t": 23.0,
+      "uav_innov": 21.497,
+      "uav_pos_err": 44.693,
+      "ugv_target_err": 76.642
+    },
+    {
+      "t": 24.0,
+      "uav_innov": 22.661,
+      "uav_pos_err": 45.257,
+      "ugv_target_err": 75.618
+    },
+    {
+      "t": 25.0,
+      "uav_innov": 24.119,
+      "uav_pos_err": 45.925,
+      "ugv_target_err": 74.37
+    },
+    {
+      "t": 26.0,
+      "uav_innov": 25.158,
+      "uav_pos_err": 46.552,
+      "ugv_target_err": 73.212
+    },
+    {
+      "t": 27.0,
+      "uav_innov": 26.566,
+      "uav_pos_err": 47.038,
+      "ugv_target_err": 71.99
+    },
+    {
+      "t": 28.0,
+      "uav_innov": 27.529,
+      "uav_pos_err": 47.733,
+      "ugv_target_err": 71.002
+    },
+    {
+      "t": 29.0,
+      "uav_innov": 29.177,
+      "uav_pos_err": 48.481,
+      "ugv_target_err": 69.769
+    },
+    {
+      "t": 30.0,
+      "uav_innov": 28.934,
+      "uav_pos_err": 49.151,
+      "ugv_target_err": 68.795
+    },
+    {
+      "t": 31.0,
+      "uav_innov": 28.627,
+      "uav_pos_err": 49.21,
+      "ugv_target_err": 67.528
+    }
+  ],
+  "on_metrics": [
+    {
+      "t": 0.0,
+      "uav_innov": 0.293,
+      "uav_pos_err": 54.0,
+      "ugv_target_err": 0.0
+    },
+    {
+      "t": 1.0,
+      "uav_innov": 0.214,
+      "uav_pos_err": 48.0,
+      "ugv_target_err": 0.0
+    },
+    {
+      "t": 2.0,
+      "uav_innov": 0.087,
+      "uav_pos_err": 42.0,
+      "ugv_target_err": 0.0
+    },
+    {
+      "t": 3.0,
+      "uav_innov": 0.403,
+      "uav_pos_err": 36.0,
+      "ugv_target_err": 0.0
+    },
+    {
+      "t": 4.0,
+      "uav_innov": 0.34,
+      "uav_pos_err": 30.0,
+      "ugv_target_err": 0.0
+    },
+    {
+      "t": 5.0,
+      "uav_innov": 0.714,
+      "uav_pos_err": 24.0,
+      "ugv_target_err": 0.0
+    },
+    {
+      "t": 6.0,
+      "uav_innov": 1.402,
+      "uav_pos_err": 18.002,
+      "ugv_target_err": 0.0
+    },
+    {
+      "t": 7.0,
+      "uav_innov": 2.531,
+      "uav_pos_err": 12.0,
+      "ugv_target_err": 0.0
+    },
+    {
+      "t": 8.0,
+      "uav_innov": 3.574,
+      "uav_pos_err": 6.001,
+      "ugv_target_err": 0.0
+    },
+    {
+      "t": 9.0,
+      "uav_innov": 0.0,
+      "uav_pos_err": 4.05,
+      "ugv_target_err": 0.0
+    },
+    {
+      "t": 10.0,
+      "uav_innov": 0.0,
+      "uav_pos_err": 0.902,
+      "ugv_target_err": 0.0
+    },
+    {
+      "t": 11.0,
+      "uav_innov": 0.0,
+      "uav_pos_err": 0.464,
+      "ugv_target_err": 0.0
+    },
+    {
+      "t": 12.0,
+      "uav_innov": 0.0,
+      "uav_pos_err": 0.446,
+      "ugv_target_err": 0.0
+    },
+    {
+      "t": 13.0,
+      "uav_innov": 0.0,
+      "uav_pos_err": 0.476,
+      "ugv_target_err": 0.0
+    },
+    {
+      "t": 14.0,
+      "uav_innov": 0.0,
+      "uav_pos_err": 0.524,
+      "ugv_target_err": 0.0
+    },
+    {
+      "t": 15.0,
+      "uav_innov": 0.0,
+      "uav_pos_err": 0.577,
+      "ugv_target_err": 0.0
+    },
+    {
+      "t": 16.0,
+      "uav_innov": 0.0,
+      "uav_pos_err": 0.644,
+      "ugv_target_err": 0.0
+    },
+    {
+      "t": 17.0,
+      "uav_innov": 0.0,
+      "uav_pos_err": 0.675,
+      "ugv_target_err": 0.0
+    },
+    {
+      "t": 18.0,
+      "uav_innov": 0.0,
+      "uav_pos_err": 0.675,
+      "ugv_target_err": 0.0
+    },
+    {
+      "t": 19.0,
+      "uav_innov": 0.0,
+      "uav_pos_err": 0.696,
+      "ugv_target_err": 0.0
+    },
+    {
+      "t": 20.0,
+      "uav_innov": 0.0,
+      "uav_pos_err": 0.711,
+      "ugv_target_err": 0.0
+    },
+    {
+      "t": 21.0,
+      "uav_innov": 0.0,
+      "uav_pos_err": 0.701,
+      "ugv_target_err": 0.0
+    },
+    {
+      "t": 22.0,
+      "uav_innov": 0.0,
+      "uav_pos_err": 0.73,
+      "ugv_target_err": 0.0
+    },
+    {
+      "t": 23.0,
+      "uav_innov": 0.0,
+      "uav_pos_err": 0.703,
+      "ugv_target_err": 0.0
+    },
+    {
+      "t": 24.0,
+      "uav_innov": 0.0,
+      "uav_pos_err": 0.71,
+      "ugv_target_err": 0.0
+    },
+    {
+      "t": 25.0,
+      "uav_innov": 0.0,
+      "uav_pos_err": 0.733,
+      "ugv_target_err": 0.0
+    },
+    {
+      "t": 26.0,
+      "uav_innov": 0.0,
+      "uav_pos_err": 0.726,
+      "ugv_target_err": 0.0
+    },
+    {
+      "t": 27.0,
+      "uav_innov": 0.0,
+      "uav_pos_err": 0.666,
+      "ugv_target_err": 0.0
+    },
+    {
+      "t": 28.0,
+      "uav_innov": 0.0,
+      "uav_pos_err": 0.651,
+      "ugv_target_err": 0.0
+    },
+    {
+      "t": 29.0,
+      "uav_innov": 0.0,
+      "uav_pos_err": 0.649,
+      "ugv_target_err": 0.0
+    },
+    {
+      "t": 30.0,
+      "uav_innov": 0.0,
+      "uav_pos_err": 0.65,
+      "ugv_target_err": 0.0
+    },
+    {
+      "t": 31.0,
+      "uav_innov": 0.0,
+      "uav_pos_err": 0.605,
+      "ugv_target_err": 0.0
+    }
+  ],
+  "attacker_log": [
+    [
+      "4.0",
+      "recon",
+      "[(1, 'uav'), (2, 'ugv')]",
+      "COOP-GW"
+    ],
+    [
+      "5.0",
+      "mitm_engage",
+      "gateway compromised"
+    ],
+    [
+      "6.0",
+      "inject_command",
+      "1",
+      "(60.0, 40.0, 20.0)"
+    ],
+    [
+      "6.0",
+      "gps_spoof",
+      "1",
+      "[1.2, 0.0, 0.0]"
+    ],
+    [
+      "7.0",
+      "gps_spoof",
+      "1",
+      "[2.4, 0.0, 0.0]"
+    ],
+    [
+      "8.0",
+      "gps_spoof",
+      "1",
+      "[3.6, 0.0, 0.0]"
+    ],
+    [
+      "9.0",
+      "gps_spoof",
+      "1",
+      "[4.8, 0.0, 0.0]"
+    ],
+    [
+      "10.0",
+      "gps_spoof",
+      "1",
+      "[6.0, 0.0, 0.0]"
+    ],
+    [
+      "11.0",
+      "gps_spoof",
+      "1",
+      "[7.2, 0.0, 0.0]"
+    ],
+    [
+      "12.0",
+      "gps_spoof",
+      "1",
+      "[8.4, 0.0, 0.0]"
+    ],
+    [
+      "12.0",
+      "tamper_target",
+      "[-30.0, 60.0, 0.0]"
+    ],
+    [
+      "13.0",
+      "gps_spoof",
+      "1",
+      "[9.6, 0.0, 0.0]"
+    ],
+    [
+      "14.0",
+      "gps_spoof",
+      "1",
+      "[10.8, 0.0, 0.0]"
+    ],
+    [
+      "15.0",
+      "gps_spoof",
+      "1",
+      "[12.0, 0.0, 0.0]"
+    ],
+    [
+      "16.0",
+      "gps_spoof",
+      "1",
+      "[13.2, 0.0, 0.0]"
+    ],
+    [
+      "16.0",
+      "falsify_telemetry",
+      "1"
+    ],
+    [
+      "17.0",
+      "gps_spoof",
+      "1",
+      "[14.4, 0.0, 0.0]"
+    ],
+    [
+      "18.0",
+      "gps_spoof",
+      "1",
+      "[15.6, 0.0, 0.0]"
+    ],
+    [
+      "19.0",
+      "gps_spoof",
+      "1",
+      "[16.8, 0.0, 0.0]"
+    ],
+    [
+      "20.0",
+      "gps_spoof",
+      "1",
+      "[18.0, 0.0, 0.0]"
+    ],
+    [
+      "21.0",
+      "gps_spoof",
+      "1",
+      "[19.2, 0.0, 0.0]"
+    ],
+    [
+      "22.0",
+      "gps_spoof",
+      "1",
+      "[20.4, 0.0, 0.0]"
+    ],
+    [
+      "23.0",
+      "gps_spoof",
+      "1",
+      "[21.6, 0.0, 0.0]"
+    ],
+    [
+      "24.0",
+      "gps_spoof",
+      "1",
+      "[22.8, 0.0, 0.0]"
+    ],
+    [
+      "25.0",
+      "gps_spoof",
+      "1",
+      "[24.0, 0.0, 0.0]"
+    ],
+    [
+      "26.0",
+      "gps_spoof",
+      "1",
+      "[25.2, 0.0, 0.0]"
+    ],
+    [
+      "27.0",
+      "gps_spoof",
+      "1",
+      "[26.4, 0.0, 0.0]"
+    ],
+    [
+      "28.0",
+      "gps_spoof",
+      "1",
+      "[27.6, 0.0, 0.0]"
+    ],
+    [
+      "29.0",
+      "gps_spoof",
+      "1",
+      "[28.8, 0.0, 0.0]"
+    ]
+  ],
+  "defender_alarms_on": [
+    [
+      "6.0",
+      "BLOCK_unsigned_cmd",
+      "SET_POSITION_TARGET_GLOBAL_INT",
+      "src=255"
+    ],
+    [
+      "9.0",
+      "D1_innovation",
+      "1",
+      "3.57"
+    ],
+    [
+      "9.0",
+      "R1_recover_nav",
+      "1"
+    ],
+    [
+      "13.0",
+      "D3_gateway_tamper",
+      "109.76"
+    ],
+    [
+      "13.0",
+      "R3_isolate_rollback",
+      "COOP-GW"
+    ]
+  ],
+  "blue_explain_on": [
+    [
+      "6.0",
+      "미서명 SET_POSITION_TARGET_GLOBAL_INT(src=255) 탐지 → 서명검증 실패, 명령 차단(D2/Block)"
+    ],
+    [
+      "8.0",
+      "노드1: 이노베이션 임계 초과(GPS-IMU 불일치) → GPS 스푸핑 추정 → R1 추측항법 전환"
+    ],
+    [
+      "12.0",
+      "게이트웨이 중계 표적 ≠ 원 표적 → 횡적확산(표적 변조) 탐지 → R3 격리·롤백"
+    ]
+  ]
+}

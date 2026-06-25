@@ -1,0 +1,68 @@
+{
+  "part_a": [
+    {
+      "variant": "Aggressive",
+      "v1": {
+        "mean_uav_pos_err": 0.57,
+        "spoof_detections": 1
+      },
+      "v2": {
+        "mean_uav_pos_err": 0.57,
+        "spoof_detections": 1
+      }
+    },
+    {
+      "variant": "Stealth cap=2.8",
+      "v1": {
+        "mean_uav_pos_err": 0.67,
+        "spoof_detections": 1
+      },
+      "v2": {
+        "mean_uav_pos_err": 0.67,
+        "spoof_detections": 1
+      }
+    },
+    {
+      "variant": "Stealth cap=2.5",
+      "v1": {
+        "mean_uav_pos_err": 2.53,
+        "spoof_detections": 0
+      },
+      "v2": {
+        "mean_uav_pos_err": 0.79,
+        "spoof_detections": 1
+      }
+    }
+  ],
+  "part_b": [
+    {
+      "round": 0,
+      "defense": "fixed threshold only",
+      "attack_cap": 2.5,
+      "undetected_harm": 2.53,
+      "fp": 0
+    },
+    {
+      "round": 1,
+      "defense": "fixed+CUSUM(slack=2.1, H=4.0)",
+      "attack_cap": 2.0,
+      "undetected_harm": 2.03,
+      "fp": 0
+    },
+    {
+      "round": 2,
+      "defense": "fixed+CUSUM(slack=1.6, H=4.0)",
+      "attack_cap": 1.5,
+      "undetected_harm": 1.54,
+      "fp": 0
+    },
+    {
+      "round": 3,
+      "defense": "fixed+CUSUM(slack=1.1, H=4.0)",
+      "attack_cap": 0.8,
+      "undetected_harm": 0.85,
+      "fp": 0
+    }
+  ],
+  "verdict": "수렴: 방어가 오탐 한계 도달(slack=0.5에서 FP 발생) → 직전 방어가 최적"
+}
