@@ -52,10 +52,17 @@ class RedTeamAgent:
 
 class BlueTeamAgent:
     """탐지→분류(triage)→대응. enabled=False면 무방비(공격 성공 대조군)."""
-    def __init__(self, world, defender, enabled=True):
+    # 규칙 기본 정책: 경보 종류 → 대응 행동. triage_policy로 교체 가능(LLM 등).
+    _RULE_ACTION = {"spoof": "R1", "gateway": "R3", "telemetry": "NONE"}
+
+    def __init__(self, world, defender, enabled=True, triage_policy=None):
         self.w = world
         self.d = defender
         self.enabled = enabled
+        # [LLM 통합 지점] 분류·대응 정책. None=결정적 규칙(기본, 회귀 보존).
+        # 콜러블이면 (kind, ctx)->'R1'|'R3'|'NONE'로 외부 정책(예: LLM)이 대응을 결정한다.
+        self.triage_policy = triage_policy
+        self.triage_log = []   # (t, kind, ctx, action) 정책이 내린 결정 추적(설명가능성)
         self.detections = 0
         self.blocks = 0
         self.recoveries = 0
@@ -77,20 +84,44 @@ class BlueTeamAgent:
             return True
         return False
 
-    def _triage(self, t, spoof_hits, gw_ok, tele_hits, gw_reason=""):
-        """[LLM 통합 지점] 경보를 종합해 근본원인 추정·대응 결정 (PoC: 규칙)."""
-        for sid in spoof_hits:
-            self.detections += 1
+    def _decide_response(self, kind, ctx):
+        """[LLM 통합 지점] 경보 종류(kind)·맥락(ctx)에 대한 대응 행동을 결정한다.
+        triage_policy=None이면 결정적 규칙(_RULE_ACTION), 콜러블이면 외부 정책(LLM 등)이 결정.
+        반환: 'R1'(추측항법 전환) | 'R3'(게이트웨이 격리·롤백) | 'NONE'(무행동)."""
+        if self.triage_policy is None:
+            return self._RULE_ACTION[kind]
+        action = self.triage_policy(kind, ctx)
+        action = action if action in ("R1", "R3", "NONE") else "NONE"
+        self.triage_log.append((round(self.w.t, 1), kind, ctx, action))
+        return action
+
+    def _act(self, action, sid):
+        """결정된 대응을 실제 방어 도구로 실행하고 복구 수를 센다."""
+        if action == "R1" and sid is not None:
             self.d.recover_navigation(sid)
             self.recoveries += 1
-            self.explain.append((round(t, 1),
-                                 f"노드{sid}: 이노베이션 임계 초과(GPS-IMU 불일치) → GPS 스푸핑 추정 → R1 추측항법 전환"))
-        if not gw_ok:
-            self.detections += 1
+        elif action == "R3":
             self.d.isolate_and_rollback()
             self.recoveries += 1
-            self.explain.append((round(t, 1), gw_reason or
-                                 "게이트웨이 중계 표적 ≠ 원 표적 → 횡적확산(표적 변조) 탐지 → R3 격리·롤백"))
+
+    def _triage(self, t, spoof_hits, gw_ok, tele_hits, gw_reason=""):
+        """경보를 종합해 근본원인 추정·대응 결정·실행. 대응 선택은 _decide_response 정책이 담당."""
+        for sid in spoof_hits:
+            self.detections += 1
+            action = self._decide_response(
+                "spoof", {"node": sid, "evidence": "EKF innovation/CUSUM exceeded threshold (GPS-IMU mismatch)"})
+            self._act(action, sid)
+            base = f"노드{sid}: 이노베이션 임계 초과(GPS-IMU 불일치) → GPS 스푸핑 추정"
+            self.explain.append((round(t, 1),
+                                 f"{base} → R1 추측항법 전환" if action == "R1" else f"{base} → 대응 {action}"))
+        if not gw_ok:
+            self.detections += 1
+            action = self._decide_response("gateway", {"evidence": gw_reason or "relayed target != original target"})
+            self._act(action, None)
+            self.explain.append((round(t, 1),
+                                 (gw_reason or "게이트웨이 중계 표적 ≠ 원 표적 → 횡적확산(표적 변조) 탐지 → R3 격리·롤백")
+                                 if action == "R3" else
+                                 (gw_reason or "게이트웨이 이상 탐지") + f" → 대응 {action}"))
         for sid in tele_hits:
             self.detections += 1
             self.explain.append((round(t, 1),

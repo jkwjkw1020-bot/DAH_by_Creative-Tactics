@@ -1,0 +1,50 @@
+{
+  "model": "mlx-community/Qwen2.5-VL-7B-Instruct-4bit",
+  "decoding": "greedy(temp=0)",
+  "scenario": "MIRROR-CRACK in-loop (inject+spoof+tamper+evade), 32 steps, seed=42",
+  "rule_policy": {
+    "uav_pos_err": 0.6,
+    "ugv_target_err": 0.0,
+    "detections": 2,
+    "recoveries": 2
+  },
+  "llm_inloop": {
+    "uav_pos_err": 0.6,
+    "ugv_target_err": 0.0,
+    "detections": 2,
+    "recoveries": 2
+  },
+  "llm_decisions": {
+    "spoof": {
+      "action": "R1",
+      "reasoning": "Switching the affected node's navigation to dead-reckoning is the appropriate recovery action for GPS spoofing, as it ensures the mission's continuity by maintaining the node's position and orientation.",
+      "raw": "{\n  \"action\": \"R1\",\n  \"reasoning\": \"Switching the affected node's navigation to dead-reckoning is the appropriate recovery action for GPS spoofing, as it ensures the mission's continuity by maintaining the node's position and orientation.\"\n}"
+    },
+    "gateway": {
+      "action": "R3",
+      "reasoning": "The evidence indicates that the gateway is compromised, requiring isolation and rollback to preserve the mission.",
+      "raw": "{\n  \"action\": \"R3\",\n  \"reasoning\": \"The evidence indicates that the gateway is compromised, requiring isolation and rollback to preserve the mission.\"\n}"
+    }
+  },
+  "llm_triage_log": [
+    [
+      "9.0",
+      "spoof",
+      "{'node': 1, 'evidence': 'EKF innovation/CUSUM exceeded threshold (GPS-IMU mismatch)'}",
+      "R1"
+    ],
+    [
+      "13.0",
+      "gateway",
+      "{'evidence': '게이트웨이 중계 표적 ≠ 보고 원표적 → 표적 변조 탐지 → R3 격리·롤백 (D3)'}",
+      "R3"
+    ]
+  ],
+  "mission_matches_rule": true,
+  "core_actions_match_rule": true,
+  "llm_calls": 2,
+  "llm_decision_seconds": [
+    2.28,
+    1.53
+  ]
+}

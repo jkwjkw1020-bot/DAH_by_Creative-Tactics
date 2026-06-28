@@ -114,12 +114,15 @@ class BlueDefender:
         return True
 
     # D7: 신선도(anti-replay) — 명령. 서명이 유효해도(=D2 통과) stale하면 리플레이로 차단.
+    #   본 시뮬레이터의 명령은 msg.t에 '시뮬레이션 시각'을 싣는다(주입=현재 t, 리플레이=과거 t).
+    #   가드 `t <= now+1`은 시뮬타임 타임스탬프를 가진 메시지에만 신선도 검사를 적용하기 위함이다.
+    #   타임스탬프가 없거나 벽시계(time.time) 기본값인 메시지는 시뮬 신선도를 판정할 근거가 없어 건너뛴다.
     def is_replayed_command(self, msg) -> bool:
         t = getattr(msg, "t", None)
         if t is None:
             return False
         age = self.world.t - t
-        if age > self.freshness_window and t <= self.world.t + 1:   # 미래(벽시계 대형값)는 제외
+        if age > self.freshness_window and t <= self.world.t + 1:
             self._alarm("D7_replay", msg.name, round(age, 1))
             return True
         return False
