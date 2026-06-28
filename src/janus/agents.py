@@ -9,6 +9,7 @@ LLM(mlx-lm 등)이 환경 관찰을 받아 다음 전술/대응을 추론하는 
 결정적 규칙(rule) 정책을 사용하며, LLM 정책으로 교체 가능하도록 인터페이스를 분리했다.
 """
 import numpy as np
+from . import mavlink_lite as mav
 
 
 class RedTeamAgent:
@@ -34,6 +35,14 @@ class RedTeamAgent:
             self.atk.gps_spoof_step(s["uav"], s["spoof_drift"], s.get("spoof_cap"))
         self._once("lateral", t, s["lateral_t"],
                    lambda: self.atk.tamper_target(s["fake_ugv_target"]))                       # ④
+        if "forge_t" in s:                                                                     # ④' 자기보고 위조
+            self._once("forge", t, s["forge_t"], self.atk.forge_gateway_provenance)
+        if "replay_t" in s:                                                                    # ⑤ 리플레이(서명 유효·stale)
+            self._once("replay", t, s["replay_t"],
+                       lambda: self.atk.replay_command(s["uav"], *s["replay_target"],
+                                                       stale_age=s.get("replay_stale", 10.0)))
+        if "desync_t" in s:                                                                    # ⑤' 탈동기(협동 시간동기 붕괴)
+            self._once("desync", t, s["desync_t"], self.atk.desync_relay)
         self._once("evade", t, s["evade_t"],
                    lambda: self.atk.falsify_telemetry(s["uav"], s["telemetry_fake"]))          # ⑥
 
@@ -53,17 +62,22 @@ class BlueTeamAgent:
         self.explain = []   # (t, 설명) 설명가능 방어 로그
 
     def screen_command(self, msg) -> bool:
-        """명령 적용 전 차단 판정. True=차단."""
+        """명령 적용 전 차단 판정. True=차단. D2(서명)·D7(신선도)을 독립적으로 적용."""
         if not self.enabled:
             return False
-        if self.d.block_unsigned(msg):
+        if self.d.enable_d2 and self.d.block_unsigned(msg):
             self.blocks += 1
             self.explain.append((round(self.w.t, 1),
                                  f"미서명 {msg.name}(src={msg.source_system}) 탐지 → 서명검증 실패, 명령 차단(D2/Block)"))
             return True
+        if self.d.enable_d7 and self.d.is_replayed_command(msg):   # 서명은 유효하나 stale → 리플레이
+            self.blocks += 1
+            self.explain.append((round(self.w.t, 1),
+                                 f"서명 유효하나 stale한 {msg.name} 탐지 → 리플레이 차단(D7/Freshness)"))
+            return True
         return False
 
-    def _triage(self, t, spoof_hits, gw_ok, tele_hits):
+    def _triage(self, t, spoof_hits, gw_ok, tele_hits, gw_reason=""):
         """[LLM 통합 지점] 경보를 종합해 근본원인 추정·대응 결정 (PoC: 규칙)."""
         for sid in spoof_hits:
             self.detections += 1
@@ -75,7 +89,7 @@ class BlueTeamAgent:
             self.detections += 1
             self.d.isolate_and_rollback()
             self.recoveries += 1
-            self.explain.append((round(t, 1),
+            self.explain.append((round(t, 1), gw_reason or
                                  "게이트웨이 중계 표적 ≠ 원 표적 → 횡적확산(표적 변조) 탐지 → R3 격리·롤백"))
         for sid in tele_hits:
             self.detections += 1
@@ -85,10 +99,22 @@ class BlueTeamAgent:
     def monitor(self, t):
         if not self.enabled:
             return
-        spoof_hits = self.d.innovation_monitor()       # D1
-        gw_ok = self.d.gateway_integrity()             # D3
-        tele_hits = self.d.telemetry_crosscheck()      # D5
-        self._triage(t, spoof_hits, gw_ok, tele_hits)
+        spoof_hits = self.d.innovation_monitor() if self.d.enable_d1 else []   # D1 (미가동 태세면 생략)
+        gw_ok = self.d.gateway_integrity() if self.d.enable_d3 else True       # D3 (홉바이홉 자기일관성)
+        reason = ""
+        if not gw_ok:
+            reason = "게이트웨이 중계 표적 ≠ 보고 원표적 → 표적 변조 탐지 → R3 격리·롤백 (D3)"
+        if self.d.use_provenance and not self.d.provenance_check():  # D6 (종단간 출처증명)
+            if gw_ok:  # D3는 속았으나 D6가 포착 = 장악된 게이트웨이의 자기보고 위조
+                reason = ("게이트웨이 자기보고는 일관되나 UAV 종단간 서명 표적과 불일치 "
+                          "→ 장악 게이트웨이의 표적 위조 탐지 → R3 격리·롤백 (D6)")
+            gw_ok = False
+        if self.d.enable_d7 and not self.d.cooperative_fresh():  # D7 (협동 중계 신선도 = 탈동기)
+            if gw_ok:  # 내용은 일관되나 stale → 시간동기 붕괴
+                reason = "게이트웨이 중계가 stale(신선도 위반) → 협동 탈동기 탐지 → R3 재동기 (D7)"
+            gw_ok = False
+        tele_hits = self.d.telemetry_crosscheck() if self.d.enable_d5 else []  # D5
+        self._triage(t, spoof_hits, gw_ok, tele_hits, reason)
 
 
 class Orchestrator:
@@ -120,7 +146,10 @@ class Orchestrator:
 
             # 협동: 게이트웨이가 UAV 위치를 표적으로 UGV에 중계 (변조 시 fake)
             uav = self.w.get(uav_sysid)
-            relayed = self.w.gateway.relay_target(uav.true_pos)
+            # UAV 종단간 출처증명 토큰: 자신이 산출한 표적을 자신의 키로 서명(게이트웨이가 위조 불가) → D6 입력
+            tok = mav.set_position_target(ugv_sysid, *uav.true_pos, sysid=uav_sysid)
+            self.w.uav_target_token = mav.sign_message(tok, uav.key)
+            relayed = self.w.gateway.relay_target(uav.true_pos, now=self.w.t)
             ugv = self.w.get(ugv_sysid)
             if ugv is not None:
                 ugv.set_target(relayed)

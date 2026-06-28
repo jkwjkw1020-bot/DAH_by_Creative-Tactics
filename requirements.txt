@@ -1,4 +1,13 @@
+# JANUS 핵심 의존성 (python3.9+) — 공방 엔진·실험·그래프 재현에 필요
 numpy>=1.26
-matplotlib>=3.9
-scikit-learn>=1.6
-# 선택(실기체/ArduPilot SITL 연동 시): pymavlink>=2.4
+scipy>=1.13          # 보안게임 minimax 균형 LP (security_game·portfolio_extension·robustness)
+matplotlib>=3.9      # 결과 그래프 생성
+scikit-learn>=1.6    # 탐지 ML 스택(6.6) — 향후 IsolationForest/AE 확장용
+
+# --- 선택(아래는 특정 산출물에만 필요) ---
+# 보고서 PDF 빌드: src/build_report.py
+#   python3 -m pip install --user markdown xhtml2pdf
+# 실제 LLM 전략가 실증: src/llm_strategist.py (python3.12 권장, 로컬 Qwen2.5-VL)
+#   python3.12 -m pip install --break-system-packages mlx-vlm
+# 실기체/ArduPilot SITL 연동:
+#   pymavlink>=2.4

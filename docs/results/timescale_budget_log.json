@@ -1,0 +1,32 @@
+{
+  "check_latency_us": {
+    "D1 innov": 0.224,
+    "D1+CUSUM": 0.546,
+    "D2 signature": 1.951,
+    "D3 hop integ": 0.965,
+    "D5 telemetry": 1.492,
+    "D6 provenance": 4.278,
+    "Robust-nav vote": 7.688
+  },
+  "control_step_us": 8.425,
+  "fast_stack_us": 16.92,
+  "control_rates": {
+    "50 Hz": {
+      "deadline_us": 20000.0,
+      "stack_utilization_pct": 0.08,
+      "fits": true
+    },
+    "100 Hz": {
+      "deadline_us": 10000.0,
+      "stack_utilization_pct": 0.17,
+      "fits": true
+    },
+    "1 kHz": {
+      "deadline_us": 1000.0,
+      "stack_utilization_pct": 1.69,
+      "fits": true
+    }
+  },
+  "llm_decision_s": 1.52,
+  "slow_over_fast_ratio": 89835
+}

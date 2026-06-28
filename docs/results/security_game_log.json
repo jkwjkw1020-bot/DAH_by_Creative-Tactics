@@ -1,0 +1,146 @@
+{
+  "weights": {
+    "alpha_undetected": 0.5,
+    "beta_fp": 0.3
+  },
+  "mech_cost": {
+    "D1": 1,
+    "CUSUM": 1,
+    "D2": 1,
+    "D3": 1,
+    "D5": 1,
+    "D6": 2,
+    "NAV": 2
+  },
+  "coverage_damage": {
+    "inject": {
+      "None": 39.87,
+      "D1": 39.87,
+      "D1+CUSUM": 39.87,
+      "D2": 0.18,
+      "D3": 39.87,
+      "D5": 39.87,
+      "D6": 39.87,
+      "Robust-nav": 40.26,
+      "All (B=9)": 0.38
+    },
+    "spoof_aggro": {
+      "None": 29.81,
+      "D1": 0.6,
+      "D1+CUSUM": 0.6,
+      "D2": 29.81,
+      "D3": 29.81,
+      "D5": 29.81,
+      "D6": 29.81,
+      "Robust-nav": 0.46,
+      "All (B=9)": 0.64
+    },
+    "spoof_stealth": {
+      "None": 2.61,
+      "D1": 2.61,
+      "D1+CUSUM": 0.6,
+      "D2": 2.61,
+      "D3": 2.61,
+      "D5": 2.61,
+      "D6": 2.61,
+      "Robust-nav": 0.46,
+      "All (B=9)": 0.56
+    },
+    "tamper": {
+      "None": 110.07,
+      "D1": 110.07,
+      "D1+CUSUM": 110.07,
+      "D2": 110.07,
+      "D3": 0.18,
+      "D5": 110.07,
+      "D6": 0.18,
+      "Robust-nav": 110.19,
+      "All (B=9)": 0.38
+    },
+    "forge_gw": {
+      "None": 110.07,
+      "D1": 110.07,
+      "D1+CUSUM": 110.07,
+      "D2": 110.07,
+      "D3": 110.07,
+      "D5": 110.07,
+      "D6": 0.18,
+      "Robust-nav": 110.19,
+      "All (B=9)": 0.38
+    },
+    "multi": {
+      "None": 131.73,
+      "D1": 131.73,
+      "D1+CUSUM": 134.83,
+      "D2": 110.46,
+      "D3": 131.73,
+      "D5": 131.73,
+      "D6": 39.95,
+      "Robust-nav": 134.24,
+      "All (B=9)": 0.56
+    }
+  },
+  "budget_sweep": [
+    {
+      "budget": 2,
+      "value": 1.0,
+      "n_postures": 14
+    },
+    {
+      "budget": 3,
+      "value": 0.68,
+      "n_postures": 29
+    },
+    {
+      "budget": 4,
+      "value": 0.35,
+      "n_postures": 48
+    },
+    {
+      "budget": 5,
+      "value": 0.06,
+      "n_postures": 67
+    },
+    {
+      "budget": 6,
+      "value": 0.06,
+      "n_postures": 82
+    },
+    {
+      "budget": 7,
+      "value": 0.06,
+      "n_postures": 91
+    },
+    {
+      "budget": 8,
+      "value": 0.06,
+      "n_postures": 95
+    },
+    {
+      "budget": 9,
+      "value": 0.06,
+      "n_postures": 96
+    }
+  ],
+  "equilibrium_B": 3,
+  "game_value": 0.68,
+  "any_fixed_posture_worstcase": 1.5,
+  "n_postures_at_min": 29,
+  "attacker_mix": {
+    "inject": 0.0,
+    "spoof_aggro": 0.339,
+    "spoof_stealth": 0.0,
+    "tamper": 0.0,
+    "forge_gw": 0.0,
+    "multi": 0.661
+  },
+  "defender_mech_marginals": {
+    "D1": 0.569,
+    "CUSUM": 0.326,
+    "D2": 0.552,
+    "D3": 0.448,
+    "D5": 0.0,
+    "D6": 0.552,
+    "NAV": 0.0
+  }
+}

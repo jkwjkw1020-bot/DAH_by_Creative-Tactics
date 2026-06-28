@@ -1,0 +1,33 @@
+{
+  "exp_a_provenance": [
+    {
+      "config": "No defense",
+      "ugv_target_err": 109.883,
+      "gw_detections": 0
+    },
+    {
+      "config": "Hop-by-hop (D3)",
+      "ugv_target_err": 109.883,
+      "gw_detections": 0
+    },
+    {
+      "config": "End-to-end (D6)",
+      "ugv_target_err": 0.0,
+      "gw_detections": 1
+    }
+  ],
+  "exp_b_resilient_nav": [
+    {
+      "config": "Detection-only",
+      "mean_uav_pos_err": 2.53,
+      "final_uav_pos_err": 2.613,
+      "spoof_detections": 0
+    },
+    {
+      "config": "+ Resilient nav (voting)",
+      "mean_uav_pos_err": 0.44,
+      "final_uav_pos_err": 0.463,
+      "spoof_detections": 0
+    }
+  ]
+}

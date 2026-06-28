@@ -51,8 +51,8 @@ def build_world():
     return w
 
 
-def run(defense_on, steps=32, dt=1.0):
-    np.random.seed(42)  # 두 모드 동일 잡음 시퀀스(공정 비교)
+def run(defense_on, steps=32, dt=1.0, seed=42):
+    np.random.seed(seed)  # 두 모드 동일 잡음 시퀀스(공정 비교; 기본 42=헤드라인)
     w = build_world()
     red = RedTeamAgent(w, RedAttacker(w), copy.deepcopy(SCHED))
     blue = BlueTeamAgent(w, BlueDefender(w, innov_threshold=3.0), enabled=defense_on)

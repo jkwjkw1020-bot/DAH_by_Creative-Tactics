@@ -36,10 +36,32 @@ class RedAttacker:
     # ③ 명령 주입 (GCS sysid=255 사칭, 서명 없음)
     def inject_command(self, target_sysid, x, y, z):
         msg = mav.set_position_target(target_sysid, x, y, z, sysid=mav.GCS_SYSID)
+        msg.t = self.world.t          # 신선한 명령(시각 위조 아님) → D7이 아닌 D2(미서명)로 잡힘
         # 의도적으로 서명하지 않음 → MAVLink2 미서명 주입
         self.world.deliver(msg, signed=False)
         self._log("inject_command", target_sysid, (round(x, 1), round(y, 1), round(z, 1)))
         return msg
+
+    # ⑤ 리플레이 (과거에 캡처한 '유효 서명' 명령을 stale 타임스탬프로 재전송)
+    #    서명이 진짜이므로 서명검증(D2)은 통과한다 → 신선도(D7)만이 막을 수 있다.
+    def replay_command(self, target_sysid, x, y, z, stale_age=10.0):
+        v = self.world.get(target_sysid)
+        msg = mav.set_position_target(target_sysid, x, y, z, sysid=mav.GCS_SYSID)
+        mav.sign_message(msg, v.key)          # 과거 캡처한 유효 서명을 재사용(공격자가 키 보유 아님)
+        msg.t = self.world.t - stale_age      # 과거 시각 → stale(리플레이)
+        self.world.deliver(msg, signed=True)
+        self._log("replay_command", target_sysid, (round(x, 1), round(y, 1), round(z, 1)))
+        return msg
+
+    # ⑤' 탈동기 (협동 채널의 시간동기 붕괴: stale한 UAV 상태를 UGV에 계속 중계)
+    #     중계 내용은 한때 참이었으므로 내용·서명 검증으론 안 잡히고 신선도(D7)만 포착한다.
+    def desync_relay(self):
+        if self.world.gateway.compromised:
+            self.world.gateway.desync = True
+            self.world.gateway.desync_t = self.world.t
+            self._log("desync_relay", "cooperative channel desynchronized")
+            return True
+        return False
 
     # ③ GPS 점진 스푸핑 (한 스텝당 drift만큼 bias 누적)
     #    cap: bias 크기 상한. 탐지 임계 직하로 유지하면 고정임계 탐지를 회피하는 '스텔스 스푸핑'.
@@ -59,6 +81,14 @@ class RedAttacker:
             self.world.gateway.tampered = True
             self.world.gateway.relayed_target = np.array(fake_xyz, float)
             self._log("tamper_target", [round(c, 1) for c in fake_xyz])
+            return True
+        return False
+
+    # ④' 게이트웨이 자기보고 위조 (장악된 게이트웨이가 보고 원표적을 중계값으로 맞춰 홉바이홉 검증 회피)
+    def forge_gateway_provenance(self):
+        if self.world.gateway.compromised:
+            self.world.gateway.forge_provenance = True
+            self._log("forge_provenance", "gateway self-report forged")
             return True
         return False
 

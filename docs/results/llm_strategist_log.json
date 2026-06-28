@@ -1,0 +1,113 @@
+{
+  "model": "mlx-community/Qwen2.5-VL-7B-Instruct-4bit",
+  "decoding": "greedy(temp=0)",
+  "demo1_strategy": {
+    "raw": "{\n  \"single_fixed_posture_safe\": false,\n  \"enable\": [\"D1=1, D2=1, D6=1\", \"D1=1, D2=1, CUSUM=1\"],\n  \"randomize\": true,\n  \"randomize_between\": [[\"D1=1, D2=1, D6=1\"], [\"D1=1, D2=1, CUSUM=1\"]],\n  \"priority_mechanism\": \"D6\",\n  \"reasoning\": \"With a single fixed posture, the adversary can always target the un-detected tactic. Alternating between two postures ensures that no single tactic is left un-prevented and un-detected, thus minimizing the worst-case mission impact. The priority mechanism D6 is crucial as it counters the most critical attack, tamper, and is essential in any posture.\"\n}",
+    "parsed": {
+      "single_fixed_posture_safe": false,
+      "enable": [
+        "D1=1, D2=1, D6=1",
+        "D1=1, D2=1, CUSUM=1"
+      ],
+      "randomize": true,
+      "randomize_between": [
+        [
+          "D1=1, D2=1, D6=1"
+        ],
+        [
+          "D1=1, D2=1, CUSUM=1"
+        ]
+      ],
+      "priority_mechanism": "D6",
+      "reasoning": "With a single fixed posture, the adversary can always target the un-detected tactic. Alternating between two postures ensures that no single tactic is left un-prevented and un-detected, thus minimizing the worst-case mission impact. The priority mechanism D6 is crucial as it counters the most critical attack, tamper, and is essential in any posture."
+    },
+    "enable": [
+      "D1",
+      "D2",
+      "D6",
+      "CUSUM"
+    ],
+    "cost_ok": false,
+    "llm_posture_worstcase": 0.06,
+    "llm_posture_worst_tactic": "spoof_aggro",
+    "llm_randomization": {
+      "between": [
+        [
+          "D1",
+          "D2",
+          "D6"
+        ],
+        [
+          "CUSUM",
+          "D1",
+          "D2"
+        ]
+      ],
+      "worstcase": 0.76,
+      "worst_tactic": "tamper",
+      "budget_ok": [
+        false,
+        true
+      ]
+    },
+    "game_value_minimax": 0.68,
+    "any_fixed_worstcase": 1.5,
+    "agree": {
+      "no_fixed_safe": true,
+      "randomize": true,
+      "priority_is_loadbearing": true
+    }
+  },
+  "demo2_triage": [
+    {
+      "tactic": "spoof_aggro",
+      "alarms": [
+        "D1_innovation",
+        "R1_recover_nav"
+      ],
+      "truth_cause": "GPS spoofing",
+      "truth_response": "switch navigation to dead-reckoning (R1)",
+      "llm_root_cause": "GPS-IMU drift",
+      "llm_response": "switch navigation to dead-reckoning (R1)",
+      "match": true,
+      "raw": "```json\n{\n  \"root_cause\": \"GPS-IMU drift\",\n  \"response\": \"switch navigation to dead-reckoning (R1)\"\n}\n```"
+    },
+    {
+      "tactic": "tamper",
+      "alarms": [
+        "D3_gateway_tamper",
+        "R3_isolate_rollback"
+      ],
+      "truth_cause": "target-coordinate tampering (lateral spread)",
+      "truth_response": "isolate the gateway and roll back the target (R3)",
+      "llm_root_cause": "Relay misalignment",
+      "llm_response": "isolate the gateway and roll back the target (R3)",
+      "match": true,
+      "raw": "```json\n{\n  \"root_cause\": \"Relay misalignment\",\n  \"response\": \"isolate the gateway and roll back the target (R3)\"\n}\n```"
+    },
+    {
+      "tactic": "forge_gw",
+      "alarms": [
+        "D6_provenance_mismatch",
+        "R3_isolate_rollback"
+      ],
+      "truth_cause": "compromised gateway forging its self-report",
+      "truth_response": "isolate the gateway and roll back the target (R3)",
+      "llm_root_cause": "trusted relay altered target",
+      "llm_response": "isolate the gateway and roll back the target (R3)",
+      "match": true,
+      "raw": "```json\n{\n  \"root_cause\": \"trusted relay altered target\",\n  \"response\": \"isolate the gateway and roll back the target (R3)\"\n}\n```"
+    }
+  ],
+  "triage_match": "3/3",
+  "llm_decision_seconds": {
+    "calls": 4,
+    "median_s": 1.52,
+    "all_s": [
+      7.17,
+      1.47,
+      1.52,
+      1.52
+    ]
+  }
+}
