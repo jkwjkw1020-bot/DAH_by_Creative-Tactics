@@ -28,6 +28,7 @@ src/coevolution.py         # 반복 적대적 공진화 (약점 발견 → 보�
 src/advanced_engagement.py # 신뢰 축 붕괴 시 방어: 종단간 출처증명·생존성      → fig6~7
 src/security_game.py       # 전술공간 보안게임·minimax 균형·보안-비용 곡선     → fig8~9
 src/llm_strategist.py      # 실제 LLM(Qwen2.5-VL) 전략가 교차검증 (python3.12)  → log
+src/llm_inloop_engagement.py # LLM을 방어 루프에 직접 배선한 교전 시연 (python3.12) → log
 src/timescale_budget.py    # 2-시간척도 지연 실측 (인루프 검사 vs LLM 자문)     → fig10
 src/portfolio_extension.py # 공격 포트폴리오 확장(리플레이·탈동기)·균형 재조정  → fig11
 src/robustness.py          # 다중시드 강건성 점검 (헤드라인 수치 분포 안정성)   → log
@@ -53,9 +54,10 @@ PYTHONPATH=src python3 src/robustness.py           # 다중시드 강건성 → 
 
 python3 tests/test_smoke.py      # 동작 검증 (9건)
 
-# (선택) 실제 LLM 전략가 교차검증 — python3.12 + mlx-vlm, 로컬 Qwen2.5-VL-7B
+# (선택) 실제 LLM 전략가 교차검증 / LLM 인루프 교전 시연 — python3.12 + mlx-vlm, 로컬 Qwen2.5-VL-7B
 /opt/homebrew/bin/python3.12 -m pip install --break-system-packages mlx-vlm
-/opt/homebrew/bin/python3.12 src/llm_strategist.py # → llm_strategist_log.json
+/opt/homebrew/bin/python3.12 src/llm_strategist.py       # → llm_strategist_log.json
+/opt/homebrew/bin/python3.12 src/llm_inloop_engagement.py # 교전 루프 안의 LLM 결정 시연 → llm_inloop_log.json
 ```
 
 ## 주요 결과 (재현 가능, 시드 고정)
@@ -74,19 +76,20 @@ python3 tests/test_smoke.py      # 동작 검증 (9건)
 - **탐지 없는 생존성**: 임계 직하 스텔스 스푸핑(탐지 0건)에서 탐지전용은 2.53 m 이탈하나, 다중 항법원 중앙값 투표는 동일 무탐지 조건에서 0.44 m로 억제(fig7).
 - **전술공간 보안게임**: 어떤 단일 메커니즘도 전 전술을 막지 못한다(fig8a). 예산 B=3에서 가용 고정태세 29개가 전부 임무실패(1.5)인데, minimax 혼합전략 균형은 0.68로 55% 낮춘다 — 정량적 심층방어(fig8b·9).
 - **실제 LLM 교차검증**: 로컬 Qwen2.5-VL-7B가 동일 관찰에서 게임이론 해와 3결론(고정배치 불가·무작위화 필요·D6 핵심) 독립 일치, 분류 3/3 규칙정책 일치.
+- **LLM 인루프 시연**: 방어 에이전트의 분류·대응 정책 자리(`triage_policy`)에 로컬 LLM을 직접 꽂아 교전 루프 안에서 경보별 대응(spoof→R1, gateway→R3)을 실시간 결정·복구 구동 → 규칙 정책과 동일한 임무 보전(UAV 0.6 m·UGV 0 m). LLM이 폐루프 결정자로 동작함을 입증(`llm_inloop_log.json`).
 - **2-시간척도 지연**: 결정적 인루프 검사 전 스택 16.9마이크로초/스텝(50Hz의 0.08%) vs LLM 결정 1.52 s(약 9만 배) → 빠른 제어 경로 + 느린 자문 루프 분리(fig10).
 - **포트폴리오 확장**: 공격에 리플레이·탈동기를 추가하면 신선도 검사 D7의 균형 가동확률이 0 → 0.66으로 부상 — 공격 혁신에 균형이 자동 재배분(fig11).
 - **다중시드 강건성**: 21개 독립 시드 반복에서 헤드라인 수치가 좁은 표준편차로 안정(예: 방어 적용 UAV 0.44 ± 0.20 m, D6 0.00 ± 0.00 m, 게임값 0.67 ± 0.01). 정성적 결론은 전 시드에서 동일(`robustness_log.json`).
 
 ## 결과물 목록
 - **그림**: `docs/results/fig1~fig11` (교전 3 + 공진화 2 + 출처증명/생존성 2 + 보안게임 2 + 2-시간척도 1 + 포트폴리오 1)
-- **로그(JSON)**: engagement / coevolution / advanced / security_game / llm_strategist / timescale_budget / portfolio_extension / robustness
+- **로그(JSON)**: engagement / coevolution / advanced / security_game / llm_strategist / llm_inloop / timescale_budget / portfolio_extension / robustness
 - **다이어그램**: `docs/diagrams/` (협동 통신 구조 · 킬체인 · 방어 스택 · JANUS 아키텍처)
 
 ## 비고
 - 본 PoC는 재현성과 단일 장비 실행을 위해 비행 동역학을 ArduPilot SITL을 모사한 경량 시뮬레이터로,
   에이전트 정책을 결정적 규칙으로 구현하였다. 메시지 계층(`mavlink_lite`)과 정책 계층은 인터페이스가
   분리되어 각각 pymavlink와 언어모델(mlx-lm/mlx-vlm)로 교체 가능하다. 실제 LLM 전략가 교차검증
-  (`llm_strategist.py`)이 이 교체 가능성을 로컬 모델로 실증한다.
+  (`llm_strategist.py`)과 LLM 인루프 교전 시연(`llm_inloop_engagement.py`)이 이 교체 가능성을 로컬 모델로 실증한다.
 - 환경: macOS(Apple Silicon), Python 3.9(핵심) / Python 3.12(LLM 교차검증, 선택).
 - 본 코드는 **방어 연구·교육 목적의 시뮬레이션**이며, 실제 무인체계를 대상으로 한 공격에 사용하는 것을 금한다.
