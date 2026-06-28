@@ -1,0 +1,73 @@
+{
+  "params": {
+    "tau_miss_m": 5,
+    "tau_det_m": 3,
+    "eps_m": 1,
+    "fresh_s": 3
+  },
+  "crypto_assumption": "attacker lacks UAV key (HMAC unforgeable): a token verifies only if its content == true target",
+  "authenticity_grid": {
+    "none": {
+      "inject": "SAT",
+      "tamper": "SAT",
+      "forge": "SAT",
+      "replay": "SAT"
+    },
+    "hop": {
+      "inject": "UNSAT",
+      "tamper": "UNSAT",
+      "forge": "SAT",
+      "replay": "SAT"
+    },
+    "d6": {
+      "inject": "UNSAT",
+      "tamper": "UNSAT",
+      "forge": "UNSAT",
+      "replay": "SAT"
+    },
+    "min": {
+      "inject": "UNSAT",
+      "tamper": "UNSAT",
+      "forge": "UNSAT",
+      "replay": "UNSAT"
+    },
+    "all": {
+      "inject": "UNSAT",
+      "tamper": "UNSAT",
+      "forge": "UNSAT",
+      "replay": "UNSAT"
+    }
+  },
+  "survivability": {
+    "detection_only_D1": "SAT",
+    "voting_NAV": "UNSAT"
+  },
+  "forge_counterexample_hopbyhop": null,
+  "minimal_safe_sets_authenticity": [
+    [
+      "D2",
+      "D6",
+      "D7"
+    ]
+  ],
+  "d6_subsumes_d3": true,
+  "triangulation": {
+    "formal_required": [
+      "D2",
+      "D6",
+      "D7",
+      "NAV"
+    ],
+    "game_loadbearing": [
+      "D2",
+      "D6",
+      "D7"
+    ],
+    "sim": {
+      "D6_m": 0.0,
+      "D3_m": 110.0,
+      "voting_m": 0.44,
+      "detect_only_m": 2.53
+    }
+  }
+}

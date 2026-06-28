@@ -158,6 +158,18 @@ def test_robustness_gap_holds_across_seeds():
     print("[OK] 강건성: 3개 시드 모두 방어 미적용>40m·적용<2m (헤드라인 분포 안정)")
 
 
+def test_formal_verification_minimal_safe_set():
+    """형식검증(z3): {D2,D6,D7}는 전 공격 UNSAT(증명적 안전), 홉바이홉(D2,D3)은 forge가 SAT(반례 존재),
+    임계탐지(D1)는 스텔스 사각지대(SAT)·다중항법원 투표(NAV)는 안전(UNSAT)."""
+    import formal_verification as fv
+    assert fv.authenticity_safe({"D2", "D6", "D7"}), "최소 안전 집합 {D2,D6,D7}은 모든 공격을 막아야 한다"
+    assert fv.authenticity_query({"D2", "D3"}, "forge")[0] == "SAT", "홉바이홉은 forge에 뚫려야 한다(z3 반례)"
+    assert fv.minimal_safe_sets()[0] == [{"D2", "D6", "D7"}], "유일한 극소 안전 집합은 {D2,D6,D7}이어야 한다"
+    assert fv.survivability_query({"D1"})[0] == "SAT" and fv.survivability_query({"NAV"})[0] == "UNSAT", \
+        "임계탐지는 스텔스 사각지대(SAT), 투표는 탐지 없이 안전(UNSAT)이어야 한다"
+    print("[OK] 형식검증: {D2,D6,D7} 증명적 안전·홉바이홉 forge 반례·투표 생존성(z3)")
+
+
 if __name__ == "__main__":
     test_defense_detects_attack()
     test_attack_succeeds_without_defense()
@@ -168,4 +180,5 @@ if __name__ == "__main__":
     test_replay_defeats_signature_only_freshness_stops()
     test_portfolio_extension_rebalances_to_d7()
     test_robustness_gap_holds_across_seeds()
+    test_formal_verification_minimal_safe_set()
     print("스모크 테스트 통과")

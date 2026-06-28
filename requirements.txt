@@ -3,6 +3,7 @@ numpy>=1.26
 scipy>=1.13          # 보안게임 minimax 균형 LP (security_game·portfolio_extension·robustness)
 matplotlib>=3.9      # 결과 그래프 생성
 scikit-learn>=1.6    # 탐지 ML 스택(6.6) — 향후 IsolationForest/AE 확장용
+z3-solver>=4.12      # 형식 검증(6.11): 방어 불변식 충분성 증명·공격 반례 자동합성
 
 # --- 선택(아래는 특정 산출물에만 필요) ---
 # 보고서 PDF 빌드: src/build_report.py
