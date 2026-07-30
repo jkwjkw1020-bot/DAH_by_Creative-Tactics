@@ -14,6 +14,7 @@ DAH 2026 예선 부가자료(소스코드)이며, 보고서 본문은 대회 플
 - **방어(Zero-Trust, 심층 방어)**: MAVLink2 서명 · 센서융합 이상탐지(EKF 이노베이션 + CUSUM) · 게이트웨이 무결성/홉바이홉(D3) · 종단간 출처증명(D6) · 다중 항법원 투표 · 신선도/anti-replay(D7) → 차단 · 추측항법 복구 · 격리·롤백
 - **에이전트**: 조정자(LLM) + Red/Blue 전문 에이전트의 공방 폐루프, 그리고 **공방을 반복해 약점을 자동 발견·보완하는 적대적 자가개선**
 - **전술공간 보안게임**: 공방을 예산 제약 자원배분 게임으로 정식화하여 minimax 혼합전략 균형을 풀고, 어떤 고정 방어 배치도 안전하지 않음을 정량적으로 입증(균형 기반 방어 자원배분)
+- **형식 검증(SMT)**: z3로 방어 불변식의 충분성을 증명하고 부족한 구성에 대해서는 공격 반례를 자동 합성. 시뮬레이션·게임 균형·형식 증명 **세 방법이 동일한 최소 방어 집합으로 수렴**
 
 ## 디렉토리 구조
 ```
@@ -31,11 +32,12 @@ src/llm_strategist.py      # 실제 LLM(Qwen2.5-VL) 전략가 교차검증 (pyth
 src/llm_inloop_engagement.py # LLM을 방어 루프에 직접 배선한 교전 시연 (python3.12) → log
 src/timescale_budget.py    # 2-시간척도 지연 실측 (인루프 검사 vs LLM 자문)     → fig10
 src/portfolio_extension.py # 공격 포트폴리오 확장(리플레이·탈동기)·균형 재조정  → fig11
+src/formal_verification.py # z3 SMT 형식검증 (최소 안전집합 증명·반례 자동합성) → fig12
 src/robustness.py          # 다중시드 강건성 점검 (헤드라인 수치 분포 안정성)   → log
 src/make_diagrams.py       # 보고서용 아키텍처 다이어그램 생성
 src/build_report.py        # 보고서 마크다운 → PDF 빌드
-tests/test_smoke.py        # 스모크 테스트 (9건)
-docs/results/              # 교전·실험 결과 그래프(fig1~11)·로그(JSON)
+tests/test_smoke.py        # 스모크 테스트 (10건)
+docs/results/              # 교전·실험 결과 그래프(fig1~12)·로그(JSON)
 docs/diagrams/             # 아키텍처 다이어그램
 ```
 
@@ -50,9 +52,10 @@ PYTHONPATH=src python3 src/advanced_engagement.py  # 출처증명·생존성 →
 PYTHONPATH=src python3 src/security_game.py        # 보안게임·균형 → fig8~9
 PYTHONPATH=src python3 src/timescale_budget.py     # 2-시간척도 지연 실측 → fig10
 PYTHONPATH=src python3 src/portfolio_extension.py  # 포트폴리오 확장·D7 균형 재조정 → fig11
+PYTHONPATH=src python3 src/formal_verification.py  # z3 형식검증·최소 안전집합 → fig12
 PYTHONPATH=src python3 src/robustness.py           # 다중시드 강건성 → robustness_log.json
 
-python3 tests/test_smoke.py      # 동작 검증 (9건)
+python3 tests/test_smoke.py      # 동작 검증 (10건)
 
 # (선택) 실제 LLM 전략가 교차검증 / LLM 인루프 교전 시연 — python3.12 + mlx-vlm, 로컬 Qwen2.5-VL-7B
 /opt/homebrew/bin/python3.12 -m pip install --break-system-packages mlx-vlm
@@ -80,10 +83,12 @@ python3 tests/test_smoke.py      # 동작 검증 (9건)
 - **2-시간척도 지연**: 결정적 인루프 검사 전 스택 16.9마이크로초/스텝(50Hz의 0.08%) vs LLM 결정 1.52 s(약 9만 배) → 빠른 제어 경로 + 느린 자문 루프 분리(fig10).
 - **포트폴리오 확장**: 공격에 리플레이·탈동기를 추가하면 신선도 검사 D7의 균형 가동확률이 0 → 0.66으로 부상 — 공격 혁신에 균형이 자동 재배분(fig11).
 - **다중시드 강건성**: 21개 독립 시드 반복에서 헤드라인 수치가 좁은 표준편차로 안정(예: 방어 적용 UAV 0.44 ± 0.20 m, D6 0.00 ± 0.00 m, 게임값 0.67 ± 0.01). 정성적 결론은 전 시드에서 동일(`robustness_log.json`).
+- **형식 검증(z3 SMT)**: 명시한 위협 모델과 암호 위조불가 가정 위에서, 인증성을 지키는 **최소 방어 집합이 {D2, D6, D7} 하나로 유일**하며 **D6가 D3를 포섭**함을 증명. 부족한 구성에 대해서는 z3가 공격을 자동 합성한다(홉바이홉만으로는 게이트웨이 자기보고 위조가 SAT, 서명+D6로도 리플레이가 SAT). 생존성에서는 임계 탐지 단독이 SAT(사각지대 존재)인 반면 다중 항법원 투표는 UNSAT(탐지 없이도 안전)(fig12).
+- **삼중 수렴**: 형식 증명이 요구하는 불변식 {D2, D6, D7}·항법 투표가, 게임 균형에서 하중지지로 식별된 메커니즘 및 시뮬레이션이 가리킨 방어와 일치한다. 서로 독립적인 세 방법이 같은 최소 방어 집합으로 모인다는 점에서, 결론이 특정 방법론의 산물이 아님을 시사한다(단, D7의 하중지지는 리플레이·탈동기를 포함한 포트폴리오 확장 게임에서 부상).
 
 ## 결과물 목록
-- **그림**: `docs/results/fig1~fig11` (교전 3 + 공진화 2 + 출처증명/생존성 2 + 보안게임 2 + 2-시간척도 1 + 포트폴리오 1)
-- **로그(JSON)**: engagement / coevolution / advanced / security_game / llm_strategist / llm_inloop / timescale_budget / portfolio_extension / robustness
+- **그림**: `docs/results/fig1~fig12` (교전 3 + 공진화 2 + 출처증명/생존성 2 + 보안게임 2 + 2-시간척도 1 + 포트폴리오 1 + 형식검증 1)
+- **로그(JSON)**: engagement / coevolution / advanced / security_game / llm_strategist / llm_inloop / timescale_budget / portfolio_extension / robustness / formal_verification
 - **다이어그램**: `docs/diagrams/` (협동 통신 구조 · 킬체인 · 방어 스택 · JANUS 아키텍처)
 
 ## 비고
